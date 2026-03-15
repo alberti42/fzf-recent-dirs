@@ -1,0 +1,61 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract version
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Check release notes exist
+        run: |
+          notes="release-notes/release-${GITHUB_REF_NAME}.md"
+          if [[ ! -f "$notes" ]]; then
+            echo "::error::Release notes not found: $notes"
+            exit 1
+          fi
+
+      - name: Prepare release notes
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          NOTES="dist/release-notes.md"
+          mkdir -p dist
+          cp "release-notes/release-${TAG}.md" "$NOTES"
+          PREV_TAG=$(git tag --sort=-version:refname | grep -A1 "^${TAG}$" | tail -1)
+          if [ -n "$PREV_TAG" ] && [ "$PREV_TAG" != "$TAG" ]; then
+            echo "" >> "$NOTES"
+            echo "**Full changelog**: https://github.com/${{ github.repository }}/compare/${PREV_TAG}...${TAG}" >> "$NOTES"
+          fi
+
+      - name: Build zip artifact
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          DIR="fzf-recent-dirs-v${VERSION}"
+          mkdir -p "$DIR/src"
+          cp fzf-recent-dirs.plugin.zsh "$DIR/"
+          cp src/fzf-recent-dirs.zsh    "$DIR/src/"
+          cp LICENSE                    "$DIR/"
+          cp README.md                  "$DIR/"
+          zip -r "dist/${DIR}.zip" "$DIR"
+          rm -rf "$DIR"
+
+      - name: Create GitHub release and upload asset
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          name: fzf-recent-dirs ${{ github.ref_name }}
+          body_path: dist/release-notes.md
+          files: dist/*.zip
