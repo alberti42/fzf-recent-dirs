@@ -90,3 +90,19 @@ export FRD_QUIET_CD=false
 ```
 
 Set this before sourcing `fzf-recent-dirs.plugin.zsh`.
+
+`FRD_COMPILE` (default: enabled)
+
+When enabled, the plugin will best-effort compile its core module to `src/fzf-recent-dirs.zsh.zwc` the first time the core module is loaded. Subsequent shells will source the compiled file when it exists and is newer than the `.zsh`. This can reduce load latency.
+
+Notes:
+- Requires write permission to the plugin directory.
+- If compilation fails, the plugin falls back to sourcing the `.zsh` file.
+
+To disable (for example when the plugin directory is read-only):
+
+```zsh
+export FRD_COMPILE=false
+```
+
+Set this before the first time you invoke `fzf-recent-dirs`.
