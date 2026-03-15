@@ -2,6 +2,10 @@
 
 Zsh plugin that adds a single ZLE widget, `fzf-recent-dirs`, to switch to a recently visited directory using `fzf` over the directory stack (`dirs -v`).
 
+<p align="center">
+  <img src="images/frd_screenshot.jpg" alt="fzf-recent-dirs screenshot">
+</p>
+
 Requirements
 - Zsh
 - fzf 0.38.0+ (uses `become(...)`)
