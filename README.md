@@ -78,3 +78,15 @@ export FRD_PRECMD_REFRESH=false
 ```
 
 Set this before sourcing `fzf-recent-dirs.plugin.zsh`.
+
+`FRD_QUIET_CD` (default: enabled)
+
+By default the widget suppresses `cd +/-N` output on stdout so switching directories doesn't print the destination line.
+
+To disable:
+
+```zsh
+export FRD_QUIET_CD=false
+```
+
+Set this before sourcing `fzf-recent-dirs.plugin.zsh`.
