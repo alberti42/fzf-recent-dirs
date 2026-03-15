@@ -127,3 +127,14 @@ export FRD_COMPILE=false
 ```
 
 Set this before sourcing `fzf-recent-dirs.plugin.zsh`.
+
+## Author
+- **Author:** Andrea Alberti
+- **GitHub Profile:** [alberti42](https://github.com/alberti42)
+- **Donations:** [![Buy Me a Coffee](https://img.shields.io/badge/Donate-Buy%20Me%20a%20Coffee-orange)](https://buymeacoffee.com/alberti)
+
+Feel free to contribute to the development of this plugin or report any issues in the [GitHub repository](https://github.com/alberti42/fzf-recent-dirs/issues).
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
