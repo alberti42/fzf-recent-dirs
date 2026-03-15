@@ -1,6 +1,6 @@
 # fzf-recent-dirs
 
-Zsh plugin that adds a single ZLE widget, `fzf-recent-dirs`, to switch to a recently visited directory using `fzf` over `dirs -p`.
+Zsh plugin that adds a single ZLE widget, `fzf-recent-dirs`, to switch to a recently visited directory using `fzf` over the directory stack (`dirs -v`).
 
 Requirements
 - Zsh
@@ -60,6 +60,9 @@ To make your directory stack useful, consider these user-side options:
 setopt AUTO_CD        # navigate directories without needing "cd" command
 setopt AUTO_PUSHD     # make cd push the old directory onto the directory stack
 setopt PUSHD_SILENT   # do not print the directory stack after pushd or popd
+
+# Optional: if you use stack indices (e.g. `cd -1`) and prefer `-N` syntax.
+setopt PUSHD_MINUS
 ```
 
 ## Configuration
