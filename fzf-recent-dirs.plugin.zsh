@@ -14,6 +14,14 @@ if [[ -n ${FRD_PRECMD_REFRESH-} ]]; then
   esac
 fi
 
+: ${_fzf_recent_dirs[QUIET_CD]:=true}
+if [[ -n ${FRD_QUIET_CD-} ]]; then
+  case ${(L)FRD_QUIET_CD} in
+    0|false|no|off) _fzf_recent_dirs[QUIET_CD]=false ;;
+    1|true|yes|on)  _fzf_recent_dirs[QUIET_CD]=true  ;;
+  esac
+fi
+
 function _frd.widget() {
   local core
   core="${_fzf_recent_dirs[meta.plugin_dir]}/src/fzf-recent-dirs.zsh"

@@ -33,13 +33,19 @@ function _frd.widget() {
     sign='+'
   fi
 
-  builtin cd ${sign}${idx} || {
+  if [[ ${_fzf_recent_dirs[QUIET_CD]:-true} == true ]]; then
+    builtin cd ${sign}${idx} >/dev/null
+  else
+    builtin cd ${sign}${idx}
+  fi
+
+  if (( $? != 0 )); then
     zle -M "cd failed: ${sign}${idx}"
     BUFFER=$orig_buffer
     CURSOR=$orig_cursor
     zle reset-prompt
     return 0
-  }
+  fi
 
   BUFFER=$orig_buffer
   CURSOR=$orig_cursor
