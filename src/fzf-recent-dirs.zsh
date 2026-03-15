@@ -2,22 +2,16 @@ typeset -gA _fzf_recent_dirs
 
 function _frd.widget() {
   emulate -L zsh
-  local dir orig_buffer orig_cursor
+  local idx sign orig_buffer orig_cursor
 
   orig_buffer=$BUFFER
   orig_cursor=$CURSOR
 
   zle -I
 
-  dir="$({
-    local i=0 d
-    while IFS= read -r d; do
-      printf '%d\t%s\n' "$i" "$d"
-      (( i++ ))
-    done < <(dirs -p)
-  } | fzf --delimiter=$'\t' --with-nth=1,2 --nth=2.. \
+  idx="$(dirs -v | fzf --delimiter=$'\t' --with-nth=1,2 --nth=2.. \
           --height 40% --reverse --prompt='dir> ' \
-          --bind 'enter:become(printf "%s\\n" {2})' \
+          --bind 'enter:become(printf "%s\\n" {1})' \
           2>/dev/tty)" || {
     BUFFER=$orig_buffer
     CURSOR=$orig_cursor
@@ -25,9 +19,22 @@ function _frd.widget() {
     return 0
   }
 
-  # Intentionally unquoted so `~` expands (as configured in your shell).
-  builtin cd -- ${~dir} || {
-    zle -M "cd failed: $dir"
+  [[ $idx == <-> ]] || {
+    zle -M "fzf-recent-dirs: invalid index: $idx"
+    BUFFER=$orig_buffer
+    CURSOR=$orig_cursor
+    zle reset-prompt
+    return 0
+  }
+
+  if [[ -o pushdminus ]]; then
+    sign='-'
+  else
+    sign='+'
+  fi
+
+  builtin cd ${sign}${idx} || {
+    zle -M "cd failed: ${sign}${idx}"
     BUFFER=$orig_buffer
     CURSOR=$orig_cursor
     zle reset-prompt
