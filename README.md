@@ -49,6 +49,14 @@ plugins=(
 
 3) Restart your shell.
 
+### Zinit
+
+Add this to your `~/.zshrc`:
+
+```zsh
+zinit lucid wait light-mode atload"bindkey $'\e\C-d' fzf-recent-dirs" for @alberti42/fzf-recent-dirs
+```
+
 ## Usage
 
 > [!NOTE]
