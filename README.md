@@ -6,14 +6,13 @@ Zsh plugin that adds a single ZLE widget, `fzf-recent-dirs`, to switch to a rece
   <img src="images/frd_screenshot.jpg" alt="fzf-recent-dirs screenshot">
 </p>
 
+Features
+- Lazy-loading (load time ~1ms when sourced from `~/.zshrc`)
+- Compatible with oh-my-zsh, zinit, and typical plugin managers
+
 Requirements
 - Zsh
 - fzf 0.38.0+ (uses `become(...)`)
-
-> [!NOTE]
-> Minimal footprint by design.
-> This plugin does not set Zsh options and does not install keybindings.
-> You opt in by binding the widget and (optionally) enabling Zsh directory-stack options yourself.
 
 ## Install
 
@@ -52,21 +51,31 @@ plugins=(
 
 ## Usage
 
-Bind a key to the widget (example: Ctrl-Alt-d if your terminal sends Esc+Ctrl-d):
+> [!NOTE]
+> Minimal footprint by design: this plugin does not install keybindings.
+> This means: loading this plugin only registers the ZLE widget `fzf-recent-dirs`.
+> To trigger it, you must bind a key in your `~/.zshrc` config file.
+
+Add the following line to `~/.zshrc`:
 
 ```zsh
 bindkey $'\e\C-d' fzf-recent-dirs
 ```
 
-To make your directory stack useful, consider these user-side options:
+This line binds Ctrl-Alt-d (assuming your terminal sends Esc+Ctrl-d) to `fzf-recent-dirs`.
+Adjust the keybinding to your preference.
+
+To make your directory stack useful, we recommend configuring Zsh to push the
+current directory onto the stack when you change directories:
 
 ```zsh
-setopt AUTO_CD        # navigate directories without needing "cd" command
-setopt AUTO_PUSHD     # make cd push the old directory onto the directory stack
-setopt PUSHD_SILENT   # do not print the directory stack after pushd or popd
+setopt AUTO_PUSHD
 
 # Optional: if you use stack indices (e.g. `cd -1`) and prefer `-N` syntax.
 setopt PUSHD_MINUS
+
+# Optional: navigate directories without needing the "cd" command.
+setopt AUTO_CD
 ```
 
 ## Configuration
@@ -109,4 +118,4 @@ To disable (for example when the plugin directory is read-only):
 export FRD_COMPILE=false
 ```
 
-Set this before the first time you invoke `fzf-recent-dirs`.
+Set this before sourcing `fzf-recent-dirs.plugin.zsh`.
