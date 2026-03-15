@@ -106,3 +106,43 @@ function _frd.widget() {
   # Redraw the prompt and keep the editor state consistent.
   zle reset-prompt
 }
+
+function _frd.compile() {
+  # Best-effort compilation of the core module.
+  #
+  # Intent:
+  # - keep bootstrap minimal and fast
+  # - optionally produce a .zwc the first time this module is loaded
+  # - subsequent loads can source the compiled file directly
+  #
+  # Controlled by: _fzf_recent_dirs[COMPILE] (default true; opt-out via
+  # FRD_COMPILE=false).
+  emulate -L zsh
+
+  [[ ${_fzf_recent_dirs[COMPILE]:-true} == true ]] || return 0
+
+  local script compiled
+  local -a scripts
+
+  scripts=(
+    "${_fzf_recent_dirs[meta.plugin_dir]}/fzf-recent-dirs.plugin.zsh"
+    "${_fzf_recent_dirs[meta.plugin_dir]}/src/fzf-recent-dirs.zsh"
+  )
+
+  for script in "${scripts[@]}"; do
+    [[ -r $script ]] || continue
+
+    compiled="${script}.zwc"
+
+    # Compile only when missing or stale.
+    if [[ ! -r $compiled || $script -nt $compiled ]]; then
+      # Silence zcompile output; fall back to sourcing .zsh if it fails.
+      zcompile -Uz -- "$script" 2>/dev/null || true
+    fi
+  done
+
+  return 0
+}
+
+# Compile (best-effort) on first load.
+_frd.compile

@@ -22,10 +22,12 @@ _fzf_recent_dirs[meta.plugin_dir]=${${(%):-%x}:a:h}
 # User provides environment variables (set before sourcing this file):
 # - FRD_PRECMD_REFRESH: whether to run precmd_functions after cd (default: true)
 # - FRD_QUIET_CD: whether to silence stdout from `cd +/-N` (default: true)
+# - FRD_COMPILE: whether to compile core module to .zwc (default: enabled)
 #
 # Internally we store boolean-like strings in _fzf_recent_dirs:
 # - _fzf_recent_dirs[PRECMD_REFRESH] = true|false
 # - _fzf_recent_dirs[QUIET_CD] = true|false
+# - _fzf_recent_dirs[COMPILE] = true|false
 # -----------------------------------------------------------------------------
 
 : ${_fzf_recent_dirs[PRECMD_REFRESH]:=true}
@@ -44,6 +46,14 @@ if [[ -n ${FRD_QUIET_CD-} ]]; then
   esac
 fi
 
+: ${_fzf_recent_dirs[COMPILE]:=true}
+if [[ -n ${FRD_COMPILE-} ]]; then
+  case ${(L)FRD_COMPILE} in
+    0|false|no|off) _fzf_recent_dirs[COMPILE]=false ;;
+    1|true|yes|on)  _fzf_recent_dirs[COMPILE]=true  ;;
+  esac
+fi
+
 # -----------------------------------------------------------------------------
 # Lazy widget stub
 #
@@ -56,7 +66,7 @@ fi
 function _frd.widget() {
   local core
   core="${_fzf_recent_dirs[meta.plugin_dir]}/src/fzf-recent-dirs.zsh"
-
+  
   if [[ -r $core ]]; then
     builtin source "$core" || return 0
     _frd.widget
