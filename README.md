@@ -54,7 +54,7 @@ plugins=(
 Add this to your `~/.zshrc`:
 
 ```zsh
-zinit lucid wait light-mode atload"bindkey $'\e\C-d' fzf-recent-dirs" for @alberti42/fzf-recent-dirs
+zinit lucid wait from'gh-r' extract'!' light-mode atload"bindkey $'\e\C-d' fzf-recent-dirs" for @alberti42/fzf-recent-dirs
 ```
 
 ## Usage
