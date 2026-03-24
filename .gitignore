@@ -1,1 +1,3 @@
 **/*.zwc
+/.agent-shell/
+.dir-locals.el
